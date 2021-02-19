@@ -1,14 +1,11 @@
-@benchgroup "traversals" begin
-  @benchgroup "graphs" begin
-    for (name, g) in GRAPHS
-        @bench "$(name): bfs_tree" Graphs.bfs_tree($g, 1)
-        @bench "$(name): dfs_tree" Graphs.dfs_tree($g, 1)
-    end
-  end # graphs
-  @benchgroup "digraphs" begin
-    for (name, g) in DIGRAPHS
-        @bench "$(name): bfs_tree" Graphs.bfs_tree($g, 1)
-        @bench "$(name): dfs_tree" Graphs.dfs_tree($g, 1)
-    end
-  end # digraphs
-end # traversals
+suite["traversals"] = BenchmarkGroup(["bfs", "dfs"])
+
+# breadth first
+suite["traversals"]["bfs"] = BenchmarkGroup(["graphs", "digraphs"])
+suite["traversals"]["bfs"]["graphs"] = @benchmarkable [Graphs.bfs_tree(g, 1) for (n,g) in $GRAPHS]
+suite["traversals"]["bfs"]["digraphs"] = @benchmarkable [Graphs.bfs_tree(g, 1) for (n,g) in $DIGRAPHS]
+
+# depth first
+suite["traversals"]["dfs"] = BenchmarkGroup(["graphs", "digraphs"])
+suite["traversals"]["dfs"]["graphs"] = @benchmarkable [Graphs.dfs_tree(g, 1) for (n,g) in $GRAPHS]
+suite["traversals"]["dfs"]["digraphs"] = @benchmarkable [Graphs.dfs_tree(g, 1) for (n,g) in $DIGRAPHS]
